@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Escala de Plantões — Internato</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EFF1F3;
+    --surface: #FFFFFF;
+    --surface-2: #F6F7F9;
+    --ink: #1B2027;
+    --ink-soft: #5B6472;
+    --ink-faint: #8992A0;
+    --line: #E1E4E9;
+    --accent: #2F6F6B;
+
+    --hp: #2F6F6B;    /* Hospital Português */
+    --hp-bg: #E7F1EF;
+    --sa: #6E7F3D;    /* Santo Amaro */
+    --sa-bg: #EEF1E3;
+    --hap: #B5651D;   /* Agenor Paiva */
+    --hap-bg: #F6EAE0;
+    --ham: #7B4B94;   /* Aristide Maltez */
+    --ham-bg: #F0E7F4;
+    --hm: #3D5A80;    /* Hospital da Mulher */
+    --hm-bg: #E6ECF3;
+    --didatica: #8992A0;
+    --didatica-bg: #EEF0F2;
+
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-sizing: border-box;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15181D;
+      --surface: #1D2129;
+      --surface-2: #232833;
+      --ink: #ECEEF1;
+      --ink-soft: #A7AFBB;
+      --ink-faint: #747E8C;
+      --line: #2C313B;
+
+      --hp-bg: #1D3230;
+      --sa-bg: #262B1C;
+      --hap-bg: #322418;
+      --ham-bg: #2A2033;
+      --hm-bg: #1D2530;
+      --didatica-bg: #232833;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15181D;
+    --surface: #1D2129;
+    --surface-2: #232833;
+    --ink: #ECEEF1;
+    --ink-soft: #A7AFBB;
+    --ink-faint: #747E8C;
+    --line: #2C313B;
+    --hp-bg: #1D3230;
+    --sa-bg: #262B1C;
+    --hap-bg: #322418;
+    --ham-bg: #2A2033;
+    --hm-bg: #1D2530;
+    --didatica-bg: #232833;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header.top {
+    padding: 22px 20px 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .controls {
+    max-width: 1400px;
+    margin: 14px auto 0;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .chip {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 100px;
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: border-color .15s ease, color .15s ease, background .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .chip[aria-pressed="true"] {
+    color: var(--ink);
+    border-color: currentColor;
+    background: var(--surface-2);
+  }
+  .chip.all[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); }
+
+  .search {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid var(--line);
+    border-radius: 100px;
+    padding: 6px 12px;
+    background: var(--surface);
+  }
+  .search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12.5px;
+    color: var(--ink);
+    width: 150px;
+  }
+  .search input::placeholder { color: var(--ink-faint); }
+  .search svg { flex: none; color: var(--ink-faint); }
+
+  .board {
+    max-width: 1400px;
+    margin: 18px auto 40px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(230px, 1fr));
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+  }
+  @media (max-width: 900px) {
+    .board { grid-auto-flow: column; grid-template-columns: none; }
+    .board .day { width: 78vw; scroll-snap-align: start; }
+  }
+
+  .day {
+    background: var(--surface-2);
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 120px;
+  }
+  .day-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 2px 4px 8px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 2px;
+  }
+  .day-head .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+  .day-head .count {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 10px 11px;
+    border-left: 3px solid var(--accent);
+    box-shadow: 0 1px 2px rgba(20,24,30,.05);
+  }
+  .card .row1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .card .time {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .card .turno {
+    font-size: 10.5px;
+    color: var(--ink-faint);
+  }
+  .badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-bottom: 6px;
+  }
+  .card .doctor {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+  .card .hospital {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .card .meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .interns {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--surface-2);
+    padding: 2px 7px;
+    border-radius: 100px;
+  }
+  .freq {
+    font-style: normal;
+    color: var(--ink-faint);
+  }
+  .freq.quinzenal { color: var(--accent); font-weight: 500; }
+
+  .card.didatica {
+    border-left-color: var(--didatica);
+    background: var(--didatica-bg);
+  }
+  .card.didatica .doctor { font-size: 12.5px; }
+
+  .empty {
+    color: var(--ink-faint);
+    font-size: 11.5px;
+    padding: 10px 4px;
+    text-align: center;
+  }
+
+  .legend {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Escala de plantões — Internato</h1>
+  <p class="subtitle">Hospital Português · Santo Amaro · Agenor Paiva · Aristide Maltez · Hospital da Mulher</p>
+</header>
+
+<div class="controls" id="controls">
+  <button class="chip all" data-filter="all" aria-pressed="true">Todos</button>
+  <button class="chip" data-filter="hp" aria-pressed="true"><span class="dot" style="background:var(--hp)"></span>H. Português</button>
+  <button class="chip" data-filter="hap" aria-pressed="true"><span class="dot" style="background:var(--hap)"></span>Agenor Paiva</button>
+  <button class="chip" data-filter="ham" aria-pressed="true"><span class="dot" style="background:var(--ham)"></span>Aristide Maltez</button>
+  <button class="chip" data-filter="hm" aria-pressed="true"><span class="dot" style="background:var(--hm)"></span>H. da Mulher</button>
+  <button class="chip" data-filter="didatica" aria-pressed="true"><span class="dot" style="background:var(--didatica)"></span>Atividades didáticas</button>
+  <div class="search">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="searchBox" type="text" placeholder="Buscar médico…">
+  </div>
+</div>
+
+<div id="board" class="board"></div>
+
+<script>
+const HOSPITALS = {
+  hp:  { label: 'Hospital Português',   color: 'var(--hp)',  bg: 'var(--hp-bg)' },
+  sa:  { label: 'Santo Amaro',          color: 'var(--sa)',  bg: 'var(--sa-bg)' },
+  hap: { label: 'Agenor Paiva',         color: 'var(--hap)', bg: 'var(--hap-bg)' },
+  ham: { label: 'Aristide Maltez',      color: 'var(--ham)', bg: 'var(--ham-bg)' },
+  hm:  { label: 'Hospital da Mulher',   color: 'var(--hm)',  bg: 'var(--hm-bg)' },
+};
+
+const DAYS = [
+  { key: 'seg', label: 'Segunda' },
+  { key: 'ter', label: 'Terça' },
+  { key: 'qua', label: 'Quarta' },
+  { key: 'qui', label: 'Quinta' },
+  { key: 'sex', label: 'Sexta' },
+  { key: 'sab', label: 'Sábado' },
+  { key: 'dom', label: 'Domingo' },
+];
+
+const EVENTS = [
+  // SEGUNDA
+  { day:'seg', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Centro Cirúrgico', horario:'7h', turno:'Manhã', internos:1, freq:'Quinzenal', freqDetail:'início 28/09/2026' },
+  { day:'seg', hospitalKey:'hap', doctor:'Dra. Narjara', atividade:'Ambulatório · Cardiologia', local:'2º andar', horario:'14h–16h40', turno:'Tarde', internos:1, freq:'Quinzenal', freqDetail:'05/10, 19/10' },
+  { day:'seg', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Ambulatório', horario:'14h–19h', turno:'Tarde', internos:1, freq:'Toda semana' },
+  { day:'seg', hospitalKey:'hap', doctor:'Dr. Alan Melo', atividade:'Ambulatório', local:'Centro Médico', horario:'13h30', turno:'Tarde', internos:2, freq:'Toda semana' },
+
+  // TERÇA
+  { day:'ter', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Centro Cirúrgico', horario:'7h', turno:'Manhã', internos:1, freq:'Toda semana' },
+  { day:'ter', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Centro Cirúrgico', horario:'7h–12h30', turno:'Manhã', internos:1, freq:'Toda semana' },
+  { day:'ter', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Centro Cirúrgico', horario:'13h–19h', turno:'Tarde', internos:1, freq:'Toda semana' },
+  { day:'ter', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Centro Cirúrgico', horario:'a partir das 7h', turno:'Manhã', internos:1, freq:'Toda semana' },
+  { day:'ter', tipo:'didatica', doctor:'Aula didática (online)', atividade:'Aula', horario:'20h', freq:'Toda semana' },
+
+  // QUARTA
+  { day:'qua', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Ambulatório', local:'Centro Médico · sala 307', horario:'14h', turno:'Tarde', internos:1, freq:'Toda semana' },
+  { day:'qua', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Centro Cirúrgico', horario:'7h–13h', turno:'Manhã', internos:1, freq:'Toda semana' },
+  { day:'qua', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Ambulatório', horario:'14h–18h', turno:'Tarde', internos:1, freq:'Toda semana' },
+  { day:'qua', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Ambulatório', local:'Centro Médico', horario:'a partir das 12h30', turno:'Tarde', internos:2, freq:'Toda semana' },
+  { day:'qua', tipo:'didatica', doctor:'Apresentação de artigos (online)', atividade:'Atividade didática', horario:'20h', freq:'Quinzenal' },
+  { day:'qua', tipo:'didatica', doctor:'Sessão de casos clínicos', atividade:'Presencial · Sala da COREMU', horario:'12h30', freq:'Quinzena oposta', freqDetail:'dupla(s) no HM' },
+
+  // QUINTA
+  { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'8h–13h30', turno:'Manhã', internos:1, freq:'Toda semana' },
+  { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'14h–17h30', turno:'Tarde', internos:1, freq:'Toda semana' },
+  { day:'qui', tipo:'didatica', doctor:'Sessão de endometriose (online)', atividade:'Atividade didática', horario:'20h', freq:'Última quinta do mês' },
+
+  // SEXTA
+  { day:'sex', hospitalKey:'hap', doctor:'Dr. José Carlos Monteiro', atividade:'Ambulatório', local:'Centro Médico · sala 12', horario:'8h', turno:'Manhã', internos:2, freq:'Quinzenal', freqDetail:'início 25/09/2026' },
+];
+
+const board = document.getElementById('board');
+const activeFilters = new Set(['hp','sa','hap','ham','hm','didatica']);
+let searchTerm = '';
+
+function cardHTML(ev) {
+  if (ev.tipo === 'didatica') {
+    return `
+      <div class="card didatica" data-filter="didatica" data-doctor="${ev.doctor.toLowerCase()}">
+        <div class="row1">
+          <span class="time">${ev.horario}</span>
+          <span class="turno">Didática</span>
+        </div>
+        <div class="doctor">${ev.doctor}</div>
+        <div class="hospital">${ev.atividade}</div>
+        <div class="meta">
+          <span class="freq ${/quinzen/i.test(ev.freq) ? 'quinzenal' : ''}">${ev.freq}${ev.freqDetail ? ' · ' + ev.freqDetail : ''}</span>
+        </div>
+      </div>`;
+  }
+  const h = HOSPITALS[ev.hospitalKey];
+  const isQuinzenal = /quinzen/i.test(ev.freq);
+  return `
+    <div class="card" data-filter="${ev.hospitalKey}" data-doctor="${ev.doctor.toLowerCase()}" style="border-left-color:${h.color}">
+      <div class="row1">
+        <span class="time">${ev.horario}</span>
+        <span class="turno">${ev.turno}</span>
+      </div>
+      <span class="badge" style="background:${h.bg};color:${h.color}">${ev.atividade}</span>
+      <div class="doctor">${ev.doctor}</div>
+      <div class="hospital">${h.label}${ev.local ? ' · ' + ev.local : ''}</div>
+      <div class="meta">
+        <span class="freq ${isQuinzenal ? 'quinzenal' : ''}">${ev.freq}${ev.freqDetail ? ' · ' + ev.freqDetail : ''}</span>
+        <span class="interns">${ev.internos} ${ev.internos === 1 ? 'interno' : 'internos'}</span>
+      </div>
+    </div>`;
+}
+
+function render() {
+  board.innerHTML = DAYS.map(d => {
+    const dayEvents = EVENTS.filter(ev => ev.day === d.key);
+    const visible = dayEvents.filter(ev => {
+      const key = ev.tipo === 'didatica' ? 'didatica' : ev.hospitalKey;
+      const matchesFilter = activeFilters.has(key);
+      const matchesSearch = !searchTerm || ev.doctor.toLowerCase().includes(searchTerm);
+      return matchesFilter && matchesSearch;
+    });
+    const cardsHTML = visible.length
+      ? visible.map(cardHTML).join('')
+      : `<div class="empty">${dayEvents.length ? 'Nada com esse filtro' : 'Sem atividades'}</div>`;
+    return `
+      <div class="day">
+        <div class="day-head">
+          <span class="name">${d.label}</span>
+          <span class="count">${visible.length || ''}</span>
+        </div>
+        ${cardsHTML}
+      </div>`;
+  }).join('');
+}
+
+document.getElementById('controls').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  const f = chip.dataset.filter;
+  if (f === 'all') {
+    const allActive = activeFilters.size === 6;
+    activeFilters.clear();
+    if (!allActive) ['hp','sa','hap','ham','hm','didatica'].forEach(k => activeFilters.add(k));
+    document.querySelectorAll('.chip[data-filter]').forEach(c => {
+      c.setAttribute('aria-pressed', activeFilters.has(c.dataset.filter) || c.dataset.filter === 'all' ? String(!allActive || c.dataset.filter!=='all') : 'false');
+    });
+    document.querySelectorAll('.chip[data-filter]:not(.all)').forEach(c => c.setAttribute('aria-pressed', String(activeFilters.has(c.dataset.filter))));
+    chip.setAttribute('aria-pressed', String(!allActive));
+  } else {
+    if (activeFilters.has(f)) activeFilters.delete(f); else activeFilters.add(f);
+    chip.setAttribute('aria-pressed', String(activeFilters.has(f)));
+    document.querySelector('.chip.all').setAttribute('aria-pressed', String(activeFilters.size === 6));
+  }
+  render();
+});
+
+document.getElementById('searchBox').addEventListener('input', (e) => {
+  searchTerm = e.target.value.trim().toLowerCase();
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
