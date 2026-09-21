@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Escala de GO — Turma MED/UNIFACS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EFF1F3;
+    --surface: #FFFFFF;
+    --surface-2: #F6F7F9;
+    --ink: #1B2027;
+    --ink-soft: #5B6472;
+    --ink-faint: #8992A0;
+    --line: #E1E4E9;
+    --accent: #2F6F6B;
+    --accent-bg: #E7F1EF;
+    --warn-bg: #FBF1E0;
+    --warn-ink: #8A5A11;
+
+    --hp: #2F6F6B; --hp-bg: #E7F1EF;
+    --sa: #6E7F3D; --sa-bg: #EEF1E3;
+    --hap: #B5651D; --hap-bg: #F6EAE0;
+    --ham: #7B4B94; --ham-bg: #F0E7F4;
+    --hm: #3D5A80; --hm-bg: #E6ECF3;
+    --didatica: #8992A0; --didatica-bg: #EEF0F2;
+
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15181D; --surface: #1D2129; --surface-2: #232833;
+      --ink: #ECEEF1; --ink-soft: #A7AFBB; --ink-faint: #747E8C; --line: #2C313B;
+      --accent-bg: #1D3230; --warn-bg: #2E2611; --warn-ink: #E3BE7A;
+      --hp-bg: #1D3230; --sa-bg: #262B1C; --hap-bg: #322418; --ham-bg: #2A2033; --hm-bg: #1D2530; --didatica-bg: #232833;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15181D; --surface: #1D2129; --surface-2: #232833;
+    --ink: #ECEEF1; --ink-soft: #A7AFBB; --ink-faint: #747E8C; --line: #2C313B;
+    --accent-bg: #1D3230; --warn-bg: #2E2611; --warn-ink: #E3BE7A;
+    --hp-bg: #1D3230; --sa-bg: #262B1C; --hap-bg: #322418; --ham-bg: #2A2033; --hm-bg: #1D2530; --didatica-bg: #232833;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header.top { padding: 22px 20px 4px; max-width: 1400px; margin: 0 auto; }
+  h1 { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 23px; letter-spacing: -0.01em; margin: 0 0 4px; }
+  .subtitle { color: var(--ink-soft); font-size: 13px; margin: 0 0 10px; line-height: 1.5; }
+  .notice {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--warn-bg); color: var(--warn-ink);
+    font-size: 12px; font-weight: 500; padding: 5px 11px; border-radius: 100px;
+  }
+
+  /* Week nav */
+  .weeknav {
+    max-width: 1400px; margin: 16px auto 0; padding: 0 20px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .weeknav .navbtn {
+    width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--line);
+    background: var(--surface); color: var(--ink); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex: none; transition: opacity .15s ease, background .15s ease;
+  }
+  .weeknav .navbtn:hover:not(:disabled) { background: var(--surface-2); }
+  .weeknav .navbtn:disabled { opacity: .35; cursor: default; }
+  .weeknav .weekinfo { display: flex; flex-direction: column; gap: 1px; }
+  .weeknav .weeklabel { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15.5px; }
+  .weeknav .monthrange { font-size: 12px; color: var(--ink-soft); }
+  .weekdots { display: flex; gap: 5px; margin-left: 4px; }
+  .weekdots button {
+    width: 7px; height: 7px; border-radius: 50%; border: none; padding: 0;
+    background: var(--line); cursor: pointer;
+  }
+  .weekdots button.active { background: var(--accent); width: 16px; border-radius: 5px; }
+
+  /* Controls */
+  .controls { max-width: 1400px; margin: 14px auto 0; padding: 0 20px; display: flex; flex-direction: column; gap: 8px; }
+  .filter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .filter-row .row-label { font-size: 11px; color: var(--ink-faint); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-right: 2px; }
+  .chip {
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 12.5px; font-weight: 500;
+    padding: 6px 12px; border-radius: 100px; border: 1.5px solid var(--line);
+    background: var(--surface); color: var(--ink-soft); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: border-color .15s ease, color .15s ease, background .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .chip[aria-pressed="true"] { color: var(--ink); border-color: currentColor; background: var(--surface-2); }
+  .chip.all[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); }
+  .chip.intern[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+  .chip.clear { color: var(--ink-faint); border-style: dashed; }
+
+  .search {
+    display: flex; align-items: center; gap: 6px; border: 1.5px solid var(--line);
+    border-radius: 100px; padding: 6px 12px; background: var(--surface); max-width: 260px;
+  }
+  .search input { border: none; outline: none; background: transparent; font-family: 'IBM Plex Sans', sans-serif; font-size: 12.5px; color: var(--ink); width: 100%; }
+  .search input::placeholder { color: var(--ink-faint); }
+  .search svg { flex: none; color: var(--ink-faint); }
+
+  /* Board */
+  .board {
+    max-width: 1400px; margin: 18px auto 8px; padding: 0 20px;
+    display: grid; grid-template-columns: repeat(7, minmax(230px, 1fr)); gap: 12px;
+    overflow-x: auto; scroll-snap-type: x proximity;
+  }
+  @media (max-width: 900px) {
+    .board { grid-auto-flow: column; grid-template-columns: none; }
+    .board .day { width: 78vw; scroll-snap-align: start; }
+  }
+  .day { background: var(--surface-2); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
+  .day-head { display: flex; align-items: baseline; justify-content: space-between; padding: 2px 4px 8px; border-bottom: 1px solid var(--line); margin-bottom: 2px; }
+  .day-head .name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px; }
+  .day-head .date { font-size: 11.5px; color: var(--ink-faint); font-weight: 500; }
+
+  .card { background: var(--surface); border-radius: 12px; padding: 10px 11px; border-left: 3px solid var(--accent); box-shadow: 0 1px 2px rgba(20,24,30,.05); }
+  .card .row1 { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
+  .card .time { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 13px; }
+  .card .turno { font-size: 10.5px; color: var(--ink-faint); }
+  .badge { display: inline-block; font-size: 10.5px; font-weight: 500; padding: 2px 8px; border-radius: 100px; margin-bottom: 7px; }
+
+  .intern-line {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    background: var(--accent-bg); border-radius: 8px; padding: 5px 8px; margin-bottom: 7px;
+  }
+  .intern-line.placeholder { font-weight: 500; font-size: 11.5px; color: var(--ink-faint); background: var(--surface-2); font-style: italic; }
+  .intern-line svg { flex: none; }
+
+  .card .doctor { font-size: 12px; font-weight: 600; color: var(--ink-soft); line-height: 1.3; margin-bottom: 2px; }
+  .card .hospital { font-size: 11px; color: var(--ink-faint); margin-bottom: 6px; }
+  .card .meta { font-size: 11px; color: var(--ink-faint); }
+  .freq.quinzenal { color: var(--accent); font-weight: 500; }
+
+  .card.didatica { border-left-color: var(--didatica); background: var(--didatica-bg); }
+  .card.didatica .doctor { font-size: 12.5px; color: var(--ink); font-weight: 600; }
+
+  .empty { color: var(--ink-faint); font-size: 11.5px; padding: 10px 4px; text-align: center; }
+  .hidden { display: none !important; }
+
+  /* Arrival instructions */
+  .instructions {
+    max-width: 1400px; margin: 8px auto 40px; padding: 0 20px;
+  }
+  .instructions h2 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; margin: 18px 0 10px; }
+  .acc-item { background: var(--surface); border-radius: 12px; margin-bottom: 8px; overflow: hidden; border-left: 3px solid var(--line); }
+  .acc-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 12px 14px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .acc-head .hname { font-weight: 600; font-size: 13.5px; display: flex; align-items: center; gap: 8px; }
+  .acc-head .hname .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .acc-head .chev { color: var(--ink-faint); transition: transform .15s ease; flex: none; }
+  .acc-item.open .chev { transform: rotate(180deg); }
+  .acc-body { max-height: 0; overflow: hidden; transition: max-height .2s ease; }
+  .acc-item.open .acc-body { max-height: 1000px; }
+  .acc-body-inner {
+      white-space: pre-line; padding: 0 14px 14px; font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
+  .acc-body-inner.pending { color: var(--ink-faint); font-style: italic; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Escala de GO — Turma MED/UNIFACS</h1>
+  <p class="subtitle">Hospital Português · Santo Amaro · Agenor Paiva · Aristide Maltez · Hospital da Mulher</p>
+  <span class="notice">⚠ Sempre de jaleco e sapato fechado</span>
+</header>
+
+<div class="weeknav" id="weeknav">
+  <button class="navbtn" id="prevWeek" aria-label="Semana anterior">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <div class="weekinfo">
+    <span class="weeklabel" id="weekLabel">Semana 1 de 6</span>
+    <span class="monthrange" id="monthRange">Setembro · 21/09 – 27/09</span>
+  </div>
+  <button class="navbtn" id="nextWeek" aria-label="Próxima semana">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+  <div class="weekdots" id="weekDots"></div>
+</div>
+
+<div class="controls">
+  <div class="filter-row" id="hospitalControls">
+    <span class="row-label">Hospitais</span>
+    <button class="chip all" data-filter="all" aria-pressed="true">Todos</button>
+    <button class="chip" data-filter="hp" aria-pressed="true"><span class="dot" style="background:var(--hp)"></span>H. Português</button>
+    <button class="chip" data-filter="sa" aria-pressed="true"><span class="dot" style="background:var(--sa)"></span>Santo Amaro</button>
+    <button class="chip" data-filter="hap" aria-pressed="true"><span class="dot" style="background:var(--hap)"></span>Agenor Paiva</button>
+    <button class="chip" data-filter="ham" aria-pressed="true"><span class="dot" style="background:var(--ham)"></span>Aristide Maltez</button>
+    <button class="chip" data-filter="hm" aria-pressed="true"><span class="dot" style="background:var(--hm)"></span>H. da Mulher</button>
+    <button class="chip" data-filter="didatica" aria-pressed="true"><span class="dot" style="background:var(--didatica)"></span>Didáticas</button>
+    <div class="search">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="searchBox" type="text" placeholder="Buscar médico ou interno…">
+    </div>
+  </div>
+  <div class="filter-row" id="internControls">
+    <span class="row-label">Internos</span>
+    <button class="chip clear" id="clearInterns">Limpar seleção</button>
+  </div>
+</div>
+
+<div id="board" class="board"></div>
+
+<div class="instructions">
+  <h2>Instruções de chegada por hospital</h2>
+  <div id="accordion"></div>
+</div>
+
+<script>
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const DAY_LABELS = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+const DAY_KEYS = ['seg','ter','qua','qui','sex','sab','dom'];
+const ROTATION_START = new Date(2026, 8, 21); // Segunda 21/09/2026
+const TOTAL_WEEKS = 6;
+
+function weekDates(weekNum) {
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(ROTATION_START);
+    d.setDate(d.getDate() + (weekNum - 1) * 7 + i);
+    dates.push(d);
+  }
+  return dates;
+}
+function fmt(d) { return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0'); }
+function monthLabel(dates) {
+  const months = [...new Set(dates.map(d => d.getMonth()))];
+  return months.map(m => MONTHS[m]).join(' / ');
+}
+
+const HOSPITALS = {
+  hp:  { label: 'Hospital Português', color: 'var(--hp)', bg: 'var(--hp-bg)' },
+  sa:  { label: 'Santo Amaro', color: 'var(--sa)', bg: 'var(--sa-bg)' },
+  hap: { label: 'Agenor Paiva', color: 'var(--hap)', bg: 'var(--hap-bg)' },
+  ham: { label: 'Aristide Maltez', color: 'var(--ham)', bg: 'var(--ham-bg)' },
+  hm:  { label: 'Hospital da Mulher', color: 'var(--hm)', bg: 'var(--hm-bg)' },
+};
+
+const ALL_WEEKS = [1,2,3,4,5,6];
+
+// Full intern roster, alphabetical
+const INTERNS = [
+  'Ana Vitória Reis','Camilly Santiago','Clara Morgado','Jéssica Nunes','João Luca Couto',
+  'Joel Almeida','Júlia Fisher','Laís Gusmão','Luz Marina','Marina Fonseca','Marina Nunes',
+  'Matheus Leão','Natália Souza','Uriel Magalhães','Vanessa Aquino'
+];
+
+const EVENTS = [
+  // HOSPITAL PORTUGUÊS
+  { day:'seg', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Centro Cirúrgico', horario:'7h', turno:'Manhã', internosCount:1, freq:'Quinzenal', weeks:[2,4,6] },
+  { day:'ter', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Centro Cirúrgico', horario:'7h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Marina Nunes']} },
+  { day:'qua', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Ambulatório', local:'Centro Médico · sala 307', horario:'14h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS },
+
+  // AGENOR PAIVA (HAP)
+  { day:'seg', hospitalKey:'hap', doctor:'Dra. Narjara', atividade:'Ambulatório · Cardiologia', local:'2º andar', horario:'14h–16h40', turno:'Tarde', internosCount:1, freq:'Quinzenal', weeks:[3,5] },
+  { day:'seg', hospitalKey:'hap', doctor:'Dr. Alan Melo', atividade:'Ambulatório', local:'Centro Médico', horario:'13h30', turno:'Tarde', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS },
+  { day:'sex', hospitalKey:'hap', doctor:'Dr. José Carlos Monteiro', atividade:'Ambulatório', local:'Centro Médico · sala 12', horario:'8h', turno:'Manhã', internosCount:2, freq:'Quinzenal', weeks:[1,3,5], internsByWeek:{1:['Camilly Santiago','Marina Fonseca']} },
+
+  // ARISTIDE MALTEZ (HAM)
+  { day:'seg', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Ambulatório', horario:'14h–19h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS },
+  { day:'ter', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Centro Cirúrgico', horario:'7h–12h30', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Laís Gusmão']} },
+  { day:'ter', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Centro Cirúrgico', horario:'13h–19h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Luz Marina']} },
+  { day:'qua', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Centro Cirúrgico', horario:'7h–13h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS },
+  { day:'qua', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Ambulatório', horario:'14h–18h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS },
+  { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'8h–13h30', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['João Luca Couto']} },
+  { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'14h–17h30', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Ana Vitória Reis']} },
+
+  // HOSPITAL DA MULHER (HM)
+  { day:'ter', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Centro Cirúrgico', horario:'a partir das 7h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Jéssica Nunes']} },
+  { day:'qua', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Ambulatório', local:'Centro Médico', horario:'a partir das 12h30', turno:'Tarde', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS },
+
+  // DIDÁTICAS
+  { day:'ter', tipo:'didatica', doctor:'Aula didática (online)', atividade:'Aula', horario:'20h', freq:'Toda semana', weeks:ALL_WEEKS },
+  { day:'qua', tipo:'didatica', doctor:'Apresentação de artigos (online)', atividade:'Atividade didática', horario:'20h', freq:'Quinzenal', weeks:[1,3,5] },
+  { day:'qua', tipo:'didatica', doctor:'Sessão de casos clínicos', atividade:'Presencial · Sala da COREMU · dupla(s) do HM', horario:'12h30', freq:'Quinzena oposta', weeks:[2,4,6] },
+  { day:'qui', tipo:'didatica', doctor:'Sessão de endometriose (online)', atividade:'Atividade didática', horario:'20h', freq:'Última quinta do mês', weeks:[1,6] },
+];
+
+// Arrival instructions per hospital — fill in as info arrives
+const ARRIVAL_INFO = {
+  hp: 'Contate o professor na véspera do dia de centro cirúrgico para receber as instruções de acesso ao Hospital Português. Nas atividades no Hospital Português, apenas 1 interno por vez. O acesso ao Centro Médico (ambulatório, sala 307) é livre ao público.',
+
+  hap: 'Mastologia — Dra. Narjara: segunda-feira à tarde, quinzenal, 14h–16h40, 2º andar, setor de Cardiologia. Datas informadas: 05/10 e 19/10. Ao chegar, aguardar na recepção da Cardiologia. 1 aluno por atividade.',
+
+  ham: 'Mastologia: a palestra introdutória é obrigatória para acesso ao estágio de Mastologia no Hospital Aristides Maltez. As atividades só devem ser iniciadas após a palestra. O acesso ao hospital é permitido somente com crachá e jaleco. Após a palestra, procurar a Sra. Valdeci, no DEP (tel. 3357-6812), para retirar o crachá. Sem identificação, não é permitido o acesso ao hospital. As atividades são acompanhadas pelo(s) médico(s) residente(s) do turno.
+
+Ambulatório: dirigir-se ao Ambulatório de Mastologia e apresentar-se ao residente/preceptor, acompanhando as atividades e os atendimentos, conforme a programação.
+
+Centro cirúrgico: ao chegar, trocar de roupa no vestiário e consultar o mapa ou perguntar à enfermagem pela sala da Mastologia, geralmente a sala 09. Evitar atrasos e levar apenas o necessário, pois não há armários para bolsas ou mochilas. Não usar adornos no centro cirúrgico; apenas brincos pequenos são permitidos. Não usar colares/correntes, anéis ou pulseiras. Usar sapato fechado, impermeável e sem furos, preferencialmente NR32. Utilizar propé quando necessário. Levar óculos de proteção; há óculos disponíveis no centro cirúrgico caso necessário. Se entrar no campo cirúrgico, solicitar orientação ao técnico da sala ou auxiliar de enfermagem.
+
+Durante as atividades: celular somente nos intervalos das cirurgias. Não realizar ligações dentro das salas cirúrgicas; se necessário, pedir autorização e dirigir-se às áreas permitidas, como copa ou conforto médico. Jaleco e crachá são obrigatórios e o crachá deve permanecer visível. Levar caneta para anotações e solicitações de exames.
+
+Sessão clínica: podem ocorrer sessões clínicas da Residência Médica on-line, via Google Meet, às terças ou quartas-feiras, às 19h30. O link é enviado no grupo. Quem estiver de plantão ou em outras atividades da faculdade está dispensado.',
+
+  hm: 'Visita técnica: o rodízio no Hospital da Mulher funciona como visita técnica, pois os internos são oficiais de outro campo de estágio. O acesso às instalações será sempre acompanhado pela Dra. Narjara ou por seus residentes.
+
+Ponto de encontro: banquinhos de madeira, na entrada do estacionamento, em frente ao Tratamento com Amor.
+
+IMPORTANTE: não tentar entrar pela entrada da Administração nem procurar os agentes de portaria ou seguranças para acesso.',
+
+  sa: null,
+};
+
+let currentWeek = 1;
+const activeHospitalFilters = new Set(['hp','sa','hap','ham','hm','didatica']);
+const activeInternFilters = new Set();
+let searchTerm = '';
+
+const board = document.getElementById('board');
+
+function cardHTML(ev, week) {
+  if (ev.tipo === 'didatica') {
+    return `
+      <div class="card didatica" data-filter="didatica" data-interns="" data-doctor="${ev.doctor.toLowerCase()}">
+        <div class="row1"><span class="time">${ev.horario}</span><span class="turno">Didática</span></div>
+        <div class="doctor">${ev.doctor}</div>
+        <div class="hospital">${ev.atividade}</div>
+        <div class="meta"><span class="freq ${/quinzen|oposta|m\u00eas/i.test(ev.freq) ? 'quinzenal' : ''}">${ev.freq}</span></div>
+      </div>`;
+  }
+  const h = HOSPITALS[ev.hospitalKey];
+  const isQuinzenal = /quinzen/i.test(ev.freq);
+  const names = (ev.internsByWeek && ev.internsByWeek[week]) || null;
+  const internHTML = names
+    ? `<div class="intern-line"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>${names.join('<br>')}</div>`
+    : `<div class="intern-line placeholder">${ev.internosCount} interno${ev.internosCount>1?'s':''} — a definir</div>`;
+  const internsData = names ? names.join('|').toLowerCase() : '';
+  return `
+    <div class="card" data-filter="${ev.hospitalKey}" data-interns="${internsData}" data-doctor="${ev.doctor.toLowerCase()}" style="border-left-color:${h.color}">
+      <div class="row1"><span class="time">${ev.horario}</span><span class="turno">${ev.turno}</span></div>
+      <span class="badge" style="background:${h.bg};color:${h.color}">${ev.atividade}</span>
+      ${internHTML}
+      <div class="doctor">${ev.doctor}</div>
+      <div class="hospital">${h.label}${ev.local ? ' · ' + ev.local : ''}</div>
+      <div class="meta"><span class="freq ${isQuinzenal ? 'quinzenal' : ''}">${ev.freq}</span></div>
+    </div>`;
+}
+
+function renderBoard() {
+  const dates = weekDates(currentWeek);
+  board.innerHTML = DAY_KEYS.map((key, i) => {
+    const dayEvents = EVENTS.filter(ev => ev.day === key && ev.weeks.includes(currentWeek));
+    const visible = dayEvents.filter(ev => {
+      const filterKey = ev.tipo === 'didatica' ? 'didatica' : ev.hospitalKey;
+      const matchesHospital = activeHospitalFilters.has(filterKey);
+      const names = (ev.internsByWeek && ev.internsByWeek[currentWeek]) || [];
+      const matchesIntern = activeInternFilters.size === 0 || names.some(n => activeInternFilters.has(n));
+      const hay = (ev.doctor + ' ' + names.join(' ')).toLowerCase();
+      const matchesSearch = !searchTerm || hay.includes(searchTerm);
+      return matchesHospital && matchesIntern && matchesSearch;
+    });
+    const cardsHTML = visible.length
+      ? visible.map(ev => cardHTML(ev, currentWeek)).join('')
+      : `<div class="empty">${dayEvents.length ? 'Nada com esse filtro' : 'Sem atividades'}</div>`;
+    return `
+      <div class="day">
+        <div class="day-head"><span class="name">${DAY_LABELS[i]}</span><span class="date">${fmt(dates[i])}</span></div>
+        ${cardsHTML}
+      </div>`;
+  }).join('');
+}
+
+function renderWeekNav() {
+  const dates = weekDates(currentWeek);
+  document.getElementById('weekLabel').textContent = `Semana ${currentWeek} de ${TOTAL_WEEKS}`;
+  document.getElementById('monthRange').textContent = `${monthLabel(dates)} · ${fmt(dates[0])} – ${fmt(dates[6])}`;
+  document.getElementById('prevWeek').disabled = currentWeek === 1;
+  document.getElementById('nextWeek').disabled = currentWeek === TOTAL_WEEKS;
+  document.getElementById('weekDots').innerHTML = ALL_WEEKS.map(w =>
+    `<button class="${w===currentWeek?'active':''}" data-week="${w}" aria-label="Semana ${w}"></button>`
+  ).join('');
+}
+
+function renderInternChips() {
+  const row = document.getElementById('internControls');
+  const chips = INTERNS.map(name =>
+    `<button class="chip intern" data-intern="${name}" aria-pressed="false">${name}</button>`
+  ).join('');
+  row.innerHTML = `<span class="row-label">Internos</span>${chips}<button class="chip clear" id="clearInterns">Limpar seleção</button>`;
+}
+
+function renderAll() {
+  renderWeekNav();
+  renderBoard();
+}
+
+// Week navigation
+document.getElementById('prevWeek').addEventListener('click', () => { if (currentWeek > 1) { currentWeek--; renderAll(); } });
+document.getElementById('nextWeek').addEventListener('click', () => { if (currentWeek < TOTAL_WEEKS) { currentWeek++; renderAll(); } });
+document.getElementById('weekDots').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-week]');
+  if (!btn) return;
+  currentWeek = Number(btn.dataset.week);
+  renderAll();
+});
+
+// Hospital filters
+document.getElementById('hospitalControls').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip[data-filter]');
+  if (!chip) return;
+  const f = chip.dataset.filter;
+  const allKeys = ['hp','sa','hap','ham','hm','didatica'];
+  if (f === 'all') {
+    const allActive = activeHospitalFilters.size === allKeys.length;
+    activeHospitalFilters.clear();
+    if (!allActive) allKeys.forEach(k => activeHospitalFilters.add(k));
+  } else {
+    if (activeHospitalFilters.has(f)) activeHospitalFilters.delete(f); else activeHospitalFilters.add(f);
+  }
+  document.querySelectorAll('#hospitalControls .chip[data-filter]').forEach(c => {
+    if (c.dataset.filter === 'all') c.setAttribute('aria-pressed', String(activeHospitalFilters.size === allKeys.length));
+    else c.setAttribute('aria-pressed', String(activeHospitalFilters.has(c.dataset.filter)));
+  });
+  renderBoard();
+});
+
+// Intern filters (event delegation, chips re-rendered once)
+document.getElementById('internControls').addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip.intern');
+  if (chip) {
+    const name = chip.dataset.intern;
+    if (activeInternFilters.has(name)) activeInternFilters.delete(name); else activeInternFilters.add(name);
+    chip.setAttribute('aria-pressed', String(activeInternFilters.has(name)));
+    renderBoard();
+    return;
+  }
+  if (e.target.closest('#clearInterns')) {
+    activeInternFilters.clear();
+    document.querySelectorAll('#internControls .chip.intern').forEach(c => c.setAttribute('aria-pressed','false'));
+    renderBoard();
+  }
+});
+
+document.getElementById('searchBox').addEventListener('input', (e) => {
+  searchTerm = e.target.value.trim().toLowerCase();
+  renderBoard();
+});
+
+// Arrival instructions accordion
+const accordion = document.getElementById('accordion');
+accordion.innerHTML = Object.entries(HOSPITALS).map(([key, h]) => {
+  const info = ARRIVAL_INFO[key];
+  return `
+    <div class="acc-item" style="border-left-color:${h.color}">
+      <div class="acc-head" data-acc="${key}">
+        <span class="hname"><span class="dot" style="background:${h.color}"></span>${h.label}</span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="acc-body">
+        <div class="acc-body-inner ${info ? '' : 'pending'}">${info || 'Instruções ainda não informadas.'}</div>
+      </div>
+    </div>`;
+}).join('');
+accordion.addEventListener('click', (e) => {
+  const head = e.target.closest('.acc-head');
+  if (!head) return;
+  head.closest('.acc-item').classList.toggle('open');
+});
+
+renderInternChips();
+renderAll();
+</script>
+</body>
+</html>
