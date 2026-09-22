@@ -310,23 +310,23 @@ const INTERNS = [
 
 const EVENTS = [
   // HOSPITAL PORTUGUÊS
-  { day:'seg', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Centro Cirúrgico', horario:'7h', turno:'Manhã', internosCount:1, freq:'Quinzenal', weeks:[2,4,6] },
-  { day:'ter', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Centro Cirúrgico', horario:'7h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Marina Nunes']} },
-  { day:'qua', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Ambulatório', local:'Centro Médico · sala 307', horario:'14h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação AICM'} },
+  { day:'seg', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Centro Cirúrgico', horario:'7h', turno:'Manhã', internosCount:1, freq:'Quinzenal', weeks:[2,4,6], internsByWeek:{2:['Matheus Leão']} },
+  { day:'ter', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Centro Cirúrgico', horario:'7h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Marina Nunes'], 2:['Natália Souza']} },
+  { day:'qua', hospitalKey:'hp', doctor:'Dr. José Carlos Monteiro', atividade:'Ambulatório', local:'Centro Médico · sala 307', horario:'14h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação AICM'}, internsByWeek:{2:['Luz Marina']} },
 
   // AGENOR PAIVA (HAP)
   { day:'seg', hospitalKey:'hap', doctor:'Dra. Narjara', atividade:'Ambulatório · Cardiologia', local:'2º andar', horario:'14h–16h40', turno:'Tarde', internosCount:1, freq:'Quinzenal', weeks:[3,5] },
-  { day:'seg', hospitalKey:'hap', doctor:'Dr. Alan Melo', atividade:'Ambulatório', local:'Centro Médico', horario:'13h30', turno:'Tarde', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação Introdutório'} },
+  { day:'seg', hospitalKey:'hap', doctor:'Dr. Alan Melo', atividade:'Ambulatório', local:'Centro Médico', horario:'13h30', turno:'Tarde', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação Introdutório'}, internsByWeek:{2:['Uriel Magalhães','Vanessa Aquino']} },
   { day:'sex', hospitalKey:'hap', doctor:'Dr. José Carlos Monteiro', atividade:'Ambulatório', local:'Centro Médico · sala 12', horario:'8h', turno:'Manhã', internosCount:2, freq:'Quinzenal', weeks:[1,3,5], internsByWeek:{1:['Camilly Santiago','Marina Fonseca']} },
 
   // ARISTIDE MALTEZ (HAM)
-  { day:'seg', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Ambulatório', horario:'14h–19h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação Introdutório'} },
-  { day:'ter', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Centro Cirúrgico', horario:'7h–12h30', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Laís Gusmão']} },
-  { day:'ter', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Centro Cirúrgico', horario:'13h–19h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Luz Marina']} },
-  { day:'qua', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Centro Cirúrgico', horario:'7h–13h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação AICM'} },
-  { day:'qua', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Ambulatório', horario:'14h–18h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação AICM'} },
-  { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'8h–13h30', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['João Luca Couto']} },
-  { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'14h–17h30', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Ana Vitória Reis']} },
+  { day:'seg', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Ambulatório', horario:'14h–19h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação Introdutório'}, internsByWeek:{2:['Clara Morgado']} },
+  { day:'ter', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Centro Cirúrgico', horario:'7h–12h30', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Laís Gusmão'], 2:['Joel Almeida']} },
+  { day:'ter', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Centro Cirúrgico', horario:'13h–19h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Luz Marina'], 2:['Ana Vitória Reis']} },
+  { day:'qua', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Centro Cirúrgico', horario:'7h–13h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação AICM'}, internsByWeek:{2:['Camilly Santiago']} },
+  { day:'qua', hospitalKey:'ham', doctor:'Dra. Ana Cláudia Imbassahy', atividade:'Ambulatório', horario:'14h–18h', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação AICM'},internsByWeek:{2:['Marina Nunes']} },
+  { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'8h–13h30', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['João Luca Couto'], 2:['Júlia Fisher']} },
+  { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'14h–17h30', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Ana Vitória Reis'], 2:['Marina Fonseca']} },
 
   // SANTO AMARO (SA) — plantões diurno/noturno + USG
   { day:'ter', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'07h30–19h30', turno:'Diurno', internosCount:1, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Joel Almeida']} },
@@ -341,8 +341,8 @@ const EVENTS = [
   { day:'dom', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'19h30–07h30', turno:'Noturno', internosCount:1, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Joel Almeida']} },
 
   // HOSPITAL DA MULHER (HM)
-  { day:'ter', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Centro Cirúrgico', horario:'a partir das 7h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Jéssica Nunes']} },
-  { day:'qua', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Ambulatório', local:'Centro Médico', horario:'a partir das 12h30', turno:'Tarde', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação AICM'} },
+  { day:'ter', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Centro Cirúrgico', horario:'a partir das 7h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Jéssica Nunes'], 2:['João Luca Couto']} },
+  { day:'qua', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Ambulatório', local:'Centro Médico', horario:'a partir das 12h30', turno:'Tarde', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação AICM'}, internsByWeek:{2:['Laís Gusmão','Jéssica Nunes']} },
 
   // DIDÁTICAS
   { day:'ter', tipo:'didatica', doctor:'Aula didática (online)', atividade:'Aula', horario:'20h', freq:'Toda semana', weeks:ALL_WEEKS },
