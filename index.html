@@ -426,14 +426,10 @@ function cardHTML(ev, week) {
 function renderBoard() {
   const dates = weekDates(currentWeek);
   board.innerHTML = DAY_KEYS.map((key, i) => {
-  const eventsForDay = EVENTS
-  .filter(ev =>
-    ev.day === dayKey &&
-    ev.weeks.includes(currentWeek)
-  )
-  .sort((a, b) => {
-    return getStartMinutes(a.horario) - getStartMinutes(b.horario);
-  });
+  const eventsForDay = EVENTS.filter(ev =>
+  ev.day === dayKey &&
+  ev.weeks.includes(currentWeek)
+);
     function getStartMinutes(horario) {
   if (!horario) return 9999;
 
