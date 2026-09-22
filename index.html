@@ -175,6 +175,15 @@
   .acc-body-inner {
       white-space: pre-line; padding: 0 14px 14px; font-size: 12.5px; color: var(--ink-soft); line-height: 1.6; }
   .acc-body-inner.pending { color: var(--ink-faint); font-style: italic; }
+
+  /* Intern stats */
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 9px 13px; min-width: 190px;
+  }
+  .stat-card .stat-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 12.5px; margin-bottom: 6px; }
+  .stat-card .stat-row { display: flex; justify-content: space-between; gap: 12px; font-size: 11.5px; color: var(--ink-soft); padding: 1px 0; }
+  .stat-card .stat-row strong { color: var(--ink); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -218,6 +227,7 @@
     <span class="row-label">Internos</span>
     <button class="chip clear" id="clearInterns">Limpar seleção</button>
   </div>
+  <div class="filter-row" id="internStats"></div>
 </div>
 
 <div id="board" class="board"></div>
@@ -396,6 +406,41 @@ function renderWeekNav() {
   ).join('');
 }
 
+function computeInternStats(name) {
+  let total = 0, cc = 0, amb = 0, saDiurno = 0, saNoturno = 0;
+  EVENTS.forEach(ev => {
+    if (ev.tipo === 'didatica' || !ev.internsByWeek) return;
+    Object.values(ev.internsByWeek).forEach(names => {
+      if (!names.includes(name)) return;
+      total++;
+      if (/centro cir/i.test(ev.atividade)) cc++;
+      else if (/ambulat/i.test(ev.atividade)) amb++;
+      if (ev.hospitalKey === 'sa') {
+        if (/diurno/i.test(ev.turno)) saDiurno++;
+        else if (/noturno/i.test(ev.turno)) saNoturno++;
+      }
+    });
+  });
+  return { total, cc, amb, saDiurno, saNoturno };
+}
+
+function renderInternStats() {
+  const panel = document.getElementById('internStats');
+  if (activeInternFilters.size === 0) { panel.innerHTML = ''; return; }
+  panel.innerHTML = [...activeInternFilters].sort().map(name => {
+    const s = computeInternStats(name);
+    return `
+      <div class="stat-card">
+        <div class="stat-name">${name}</div>
+        <div class="stat-row"><span>Total de plantões</span><strong>${s.total}</strong></div>
+        <div class="stat-row"><span>Centro Cirúrgico</span><strong>${s.cc}</strong></div>
+        <div class="stat-row"><span>Ambulatório</span><strong>${s.amb}</strong></div>
+        <div class="stat-row"><span>Santo Amaro · Diurno</span><strong>${s.saDiurno}</strong></div>
+        <div class="stat-row"><span>Santo Amaro · Noturno</span><strong>${s.saNoturno}</strong></div>
+      </div>`;
+  }).join('');
+}
+
 function renderInternChips() {
   const row = document.getElementById('internControls');
   const chips = INTERNS.map(name =>
@@ -447,12 +492,14 @@ document.getElementById('internControls').addEventListener('click', (e) => {
     if (activeInternFilters.has(name)) activeInternFilters.delete(name); else activeInternFilters.add(name);
     chip.setAttribute('aria-pressed', String(activeInternFilters.has(name)));
     renderBoard();
+    renderInternStats();
     return;
   }
   if (e.target.closest('#clearInterns')) {
     activeInternFilters.clear();
     document.querySelectorAll('#internControls .chip.intern').forEach(c => c.setAttribute('aria-pressed','false'));
     renderBoard();
+    renderInternStats();
   }
 });
 
@@ -483,6 +530,7 @@ accordion.addEventListener('click', (e) => {
 });
 
 renderInternChips();
+renderInternStats();
 renderAll();
 </script>
 </body>
