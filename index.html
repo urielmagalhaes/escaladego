@@ -426,7 +426,7 @@ function cardHTML(ev, week) {
 function renderBoard() {
   const dates = weekDates(currentWeek);
   board.innerHTML = DAY_KEYS.map((key, i) => {
-    const eventsForDay = EVENTS
+  const eventsForDay = EVENTS
   .filter(ev =>
     ev.day === dayKey &&
     ev.weeks.includes(currentWeek)
