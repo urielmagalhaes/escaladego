@@ -427,6 +427,18 @@ function renderBoard() {
   const dates = weekDates(currentWeek);
   board.innerHTML = DAY_KEYS.map((key, i) => {
     const dayEvents = EVENTS.filter(ev => ev.day === key && ev.weeks.includes(currentWeek));
+    function getStartMinutes(horario) {
+  if (!horario) return 9999;
+
+  const match = horario.match(/(\d{1,2})h(?:(\d{2}))?/i);
+
+  if (!match) return 9999;
+
+  const hour = Number(match[1]);
+  const minute = Number(match[2] || 0);
+
+  return hour * 60 + minute;
+}
     const visible = dayEvents.filter(ev => {
       const filterKey = ev.tipo === 'didatica' ? 'didatica' : ev.hospitalKey;
       const matchesHospital = activeHospitalFilters.has(filterKey);
