@@ -168,7 +168,7 @@
   }
   .card.shift-day::before { background: linear-gradient(180deg, var(--shift-day-tint) 0%, transparent 100%); }
   .card.shift-night::before { background: linear-gradient(180deg, var(--shift-night-tint) 0%, transparent 100%); }
- .shift-tag {
+  .shift-tag {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -424,7 +424,9 @@ function cardHTML(ev, week) {
 }
 
 function renderBoard() {
-  const dayEvents = EVENTS.filter(ev => ev.day === key && ev.weeks.includes(currentWeek));
+  const dates = weekDates(currentWeek);
+  board.innerHTML = DAY_KEYS.map((key, i) => {
+    const dayEvents = EVENTS.filter(ev => ev.day === key && ev.weeks.includes(currentWeek));
     function getStartMinutes(horario) {
   if (!horario) return 9999;
 
