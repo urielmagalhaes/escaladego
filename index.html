@@ -328,18 +328,92 @@ const EVENTS = [
   { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'8h–13h30', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['João Luca Couto'], 2:['Júlia Fisher']} },
   { day:'qui', hospitalKey:'ham', doctor:'Dra. Narjara', atividade:'Ambulatório · Mastologia', horario:'14h–17h30', turno:'Tarde', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Ana Vitória Reis'], 2:['Marina Fonseca']} },
 
-  // SANTO AMARO (SA) — plantões diurno/noturno + USG
-  { day:'ter', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'07h30–19h30', turno:'Diurno', internosCount:1, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Joel Almeida']} },
-  { day:'ter', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'19h30–07h30', turno:'Noturno', internosCount:2, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Camilly Santiago','Laís Gusmão']} },
-  { day:'qui', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'07h30–19h30', turno:'Diurno', internosCount:3, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Luz Marina','Marina Nunes','Vanessa Aquino']} },
-  { day:'qui', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'19h30–07h30', turno:'Noturno', internosCount:2, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Uriel Magalhães','Natália Souza']} },
-  { day:'qui', hospitalKey:'sa', doctor:'USG', atividade:'USG', horario:'08h–12h', turno:'Manhã', internosCount:1, freq:'Semana 1', weeks:[1] },
-  { day:'sex', hospitalKey:'sa', doctor:'USG', atividade:'USG', horario:'14h–18h', turno:'Tarde', internosCount:1, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Júlia Fisher']} },
-  { day:'sab', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'07h30–19h30', turno:'Diurno', internosCount:2, freq:'Semana 1', weeks:[1], internsByWeek:{1:['João Luca Couto','Ana Vitória Reis']} },
-  { day:'sab', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'19h30–07h30', turno:'Noturno', internosCount:2, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Matheus Leão','Clara Morgado']} },
-  { day:'dom', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'07h30–19h30', turno:'Diurno', internosCount:2, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Marina Fonseca']} },
-  { day:'dom', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'19h30–07h30', turno:'Noturno', internosCount:1, freq:'Semana 1', weeks:[1], internsByWeek:{1:['Joel Almeida']} },
+// SANTO AMARO (SA) — ESCALA FIXA DE PLANTÕES
+{ day:'seg', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'07h30–19h30', turno:'Diurno', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{
+  1:['Marina Fonseca','Vanessa Aquino'],
+  2:['Marina Fonseca','Vanessa Aquino'],
+  3:['Marina Fonseca','Vanessa Aquino'],
+  4:['Marina Fonseca','Vanessa Aquino'],
+  5:['Marina Fonseca','Vanessa Aquino'],
+  6:['Marina Fonseca','Vanessa Aquino']
+}},
 
+{ day:'seg', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'19h30–07h30', turno:'Noturno', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{
+  1:['Ana Vitória Reis'],
+  2:['Ana Vitória Reis'],
+  3:['Ana Vitória Reis'],
+  4:['Ana Vitória Reis'],
+  5:['Ana Vitória Reis'],
+  6:['Ana Vitória Reis']
+}},
+
+{ day:'ter', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'07h30–19h30', turno:'Diurno', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{
+  1:['Joel Almeida','Camilly Santiago'],
+  2:['Joel Almeida','Camilly Santiago'],
+  3:['Joel Almeida','Camilly Santiago'],
+  4:['Joel Almeida','Camilly Santiago'],
+  5:['Joel Almeida','Camilly Santiago'],
+  6:['Joel Almeida','Camilly Santiago']
+}},
+
+{ day:'ter', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'19h30–07h30', turno:'Noturno', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{
+  1:['Laís Gusmão','Jéssica Nunes'],
+  2:['Laís Gusmão','Jéssica Nunes'],
+  3:['Laís Gusmão','Jéssica Nunes'],
+  4:['Laís Gusmão','Jéssica Nunes'],
+  5:['Laís Gusmão','Jéssica Nunes'],
+  6:['Laís Gusmão','Jéssica Nunes']
+}},
+
+{ day:'qua', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'07h30–19h30', turno:'Diurno', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{
+  1:['Matheus Leão','Clara Morgado'],
+  2:['Matheus Leão','Clara Morgado'],
+  3:['Matheus Leão','Clara Morgado'],
+  4:['Matheus Leão','Clara Morgado'],
+  5:['Matheus Leão','Clara Morgado'],
+  6:['Matheus Leão','Clara Morgado']
+}},
+
+{ day:'qua', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'19h30–07h30', turno:'Noturno', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{
+  1:['João Luca Couto','Júlia Fisher'],
+  2:['João Luca Couto','Júlia Fisher'],
+  3:['João Luca Couto','Júlia Fisher'],
+  4:['João Luca Couto','Júlia Fisher'],
+  5:['João Luca Couto','Júlia Fisher'],
+  6:['João Luca Couto','Júlia Fisher']
+}},
+
+{ day:'qui', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'07h30–19h30', turno:'Diurno', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{
+  1:['Luz Marina','Marina Nunes'],
+  2:['Luz Marina','Marina Nunes'],
+  3:['Luz Marina','Marina Nunes'],
+  4:['Luz Marina','Marina Nunes'],
+  5:['Luz Marina','Marina Nunes'],
+  6:['Luz Marina','Marina Nunes']
+}},
+
+{ day:'qui', hospitalKey:'sa', doctor:'Plantão', atividade:'Plantão', horario:'19h30–07h30', turno:'Noturno', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{
+  1:['Uriel Magalhães','Natália Souza'],
+  2:['Uriel Magalhães','Natália Souza'],
+  3:['Uriel Magalhães','Natália Souza'],
+  4:['Uriel Magalhães','Natália Souza'],
+  5:['Uriel Magalhães','Natália Souza'],
+  6:['Uriel Magalhães','Natália Souza']
+}},
+
+// USG — Semana 3
+{ day:'qua', hospitalKey:'sa', doctor:'USG', atividade:'USG', horario:'08h–12h', turno:'Manhã', internosCount:1, freq:'Semana 3', weeks:[3], internsByWeek:{
+  3:['Uriel Magalhães']
+}},
+
+{ day:'qui', hospitalKey:'sa', doctor:'USG', atividade:'USG', horario:'14h–18h', turno:'Tarde', internosCount:1, freq:'Semana 3', weeks:[3], internsByWeek:{
+  3:['Marina Fonseca']
+}},
+
+{ day:'sex', hospitalKey:'sa', doctor:'USG', atividade:'USG', horario:'14h–18h', turno:'Tarde', internosCount:1, freq:'Semana 3', weeks:[3], internsByWeek:{
+  3:['João Luca Couto']
+}},
+  
   // HOSPITAL DA MULHER (HM)
   { day:'ter', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Centro Cirúrgico', horario:'a partir das 7h', turno:'Manhã', internosCount:1, freq:'Toda semana', weeks:ALL_WEEKS, internsByWeek:{1:['Jéssica Nunes'], 2:['João Luca Couto']} },
   { day:'qua', hospitalKey:'hm', doctor:'Dr. Alan Melo', atividade:'Ambulatório', local:'Centro Médico', horario:'a partir das 12h30', turno:'Tarde', internosCount:2, freq:'Toda semana', weeks:ALL_WEEKS, liberation:{1:'Liberação AICM'}, internsByWeek:{2:['Uriel Magalhães','Vanessa Aquino']} },
