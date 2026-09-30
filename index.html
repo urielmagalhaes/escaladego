@@ -590,83 +590,114 @@ document.getElementById('weekDots').addEventListener('click', (e) => {
   }
 });
 
+// ==========================================
+// CONTROLES DE FILTRO E PESQUISA
+// ==========================================
+
+// Filtros de Hospital
 document.getElementById('hospitalControls').addEventListener('click', (e) => {
   const btn = e.target.closest('.chip');
-  if (!btn || btn.classList.contains('clear')) return;
-  const f = btn.dataset.filter;
-  if (f === 'all') {
+  if (!btn) return;
+
+  const filter = btn.dataset.filter;
+
+  if (filter === 'all') {
     activeHospitalFilters.clear();
-    ['hp','sa','hap','ham','hm','didatica'].forEach(x => activeHospitalFilters.add(x));
+    ['hp','sa','hap','ham','hm','didatica'].forEach(f => activeHospitalFilters.add(f));
     document.querySelectorAll('#hospitalControls .chip').forEach(c => c.setAttribute('aria-pressed', 'true'));
   } else {
-    if (activeHospitalFilters.has(f)) {
-      activeHospitalFilters.delete(f);
+    if (activeHospitalFilters.has(filter)) {
+      activeHospitalFilters.delete(filter);
       btn.setAttribute('aria-pressed', 'false');
+      document.querySelector('#hospitalControls .chip.all').setAttribute('aria-pressed', 'false');
     } else {
-      activeHospitalFilters.add(f);
+      activeHospitalFilters.add(filter);
       btn.setAttribute('aria-pressed', 'true');
     }
-    const allBtn = document.querySelector('#hospitalControls .chip.all');
-    allBtn.setAttribute('aria-pressed', activeHospitalFilters.size === 6 ? 'true' : 'false');
   }
   applyFilters();
 });
 
-// Setup Intern Chips
-const internContainer = document.getElementById('internControls');
-INTERNS.forEach(name => {
-  const btn = document.createElement('button');
-  btn.className = 'chip intern';
-  btn.dataset.intern = name.toLowerCase();
-  btn.setAttribute('aria-pressed', 'false');
-  btn.textContent = name;
-  btn.addEventListener('click', () => {
-    const key = name.toLowerCase();
-    if (activeInternFilters.has(key)) {
-      activeInternFilters.delete(key);
-      btn.setAttribute('aria-pressed', 'false');
-    } else {
-      activeInternFilters.add(key);
-      btn.setAttribute('aria-pressed', 'true');
-    }
+// Renderizar Botões dos Internos
+function renderInternChips() {
+  const container = document.getElementById('internControls');
+  const clearBtn = document.getElementById('clearInterns');
+
+  INTERNS.forEach(intern => {
+    const btn = document.createElement('button');
+    btn.className = 'chip intern';
+    btn.dataset.intern = intern.toLowerCase();
+    btn.setAttribute('aria-pressed', 'false');
+    btn.textContent = intern;
+    btn.addEventListener('click', () => {
+      const name = intern.toLowerCase();
+      if (activeInternFilters.has(name)) {
+        activeInternFilters.delete(name);
+        btn.setAttribute('aria-pressed', 'false');
+      } else {
+        activeInternFilters.add(name);
+        btn.setAttribute('aria-pressed', 'true');
+      }
+      applyFilters();
+    });
+    container.insertBefore(btn, clearBtn);
+  });
+
+  clearBtn.addEventListener('click', () => {
+    activeInternFilters.clear();
+    document.querySelectorAll('#internControls .chip.intern').forEach(c => c.setAttribute('aria-pressed', 'false'));
     applyFilters();
   });
-  internContainer.appendChild(btn);
-});
+}
 
-document.getElementById('clearInterns').addEventListener('click', () => {
-  activeInternFilters.clear();
-  document.querySelectorAll('#internControls .chip.intern').forEach(c => c.setAttribute('aria-pressed', 'false'));
-  applyFilters();
-});
-
+// Busca por Input de Texto
 document.getElementById('searchBox').addEventListener('input', (e) => {
-  searchTerm = e.target.value.toLowerCase().trim();
+  searchTerm = e.target.value.trim().toLowerCase();
   applyFilters();
 });
 
-// Accordion
-const accordion = document.getElementById('accordion');
-Object.keys(HOSPITALS).forEach(key => {
-  const info = ARRIVAL_INFO[key];
-  if (!info) return;
-  const h = HOSPITALS[key];
-  const item = document.createElement('div');
-  item.className = 'acc-item';
-  item.innerHTML = `
-    <div class="acc-head">
-      <span class="hname"><span class="dot" style="background:${h.color}"></span>${h.label}</span>
-      <span class="chev">▼</span>
-    </div>
-    <div class="acc-body"><div class="acc-body-inner">${info}</div></div>
-  `;
-  item.querySelector('.acc-head').addEventListener('click', () => {
-    item.classList.toggle('open');
-  });
-  accordion.appendChild(item);
-});
+// ==========================================
+// ACCORDION (INSTRUÇÕES DOS HOSPITAIS)
+// ==========================================
+const INSTRUCTIONS = [
+  { key: 'hp', name: 'Hospital Português', text: 'Entrada pela Recepção Principal. Apresentar crachá na portaria do Centro Cirúrgico / Ambulatório.' },
+  { key: 'sa', name: 'Santo Amaro', text: 'Chegar com 15 minutos de antecedência para a passagem de plantão. Identificar-se na coordenação de Medicina.' },
+  { key: 'hap', name: 'Agenor Paiva', text: 'Apresentar-se na recepção do Centro Médico no 2º andar.' },
+  { key: 'ham', name: 'Aristide Maltez', text: 'Apresentar-se na recepção do ensino/ambulatório. Uso obrigatório de jaleco em todas as dependências.' },
+  { key: 'hm', name: 'Hospital da Mulher', text: 'Sessão presencial de casos na Sala da COREMU. Trajar jaleco e portar documento com foto.' }
+];
 
-// Inicialização
+function renderAccordion() {
+  const container = document.getElementById('accordion');
+  container.innerHTML = INSTRUCTIONS.map(item => {
+    const h = HOSPITALS[item.key] || { color: 'var(--didatica)' };
+    return `
+      <div class="acc-item">
+        <div class="acc-head">
+          <span class="hname"><span class="dot" style="background:${h.color}"></span>${item.name}</span>
+          <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">${item.text}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.addEventListener('click', (e) => {
+    const head = e.target.closest('.acc-head');
+    if (head) {
+      const item = head.parentElement;
+      item.classList.toggle('open');
+    }
+  });
+}
+
+// ==========================================
+// INICIALIZAÇÃO
+// ==========================================
+renderInternChips();
+renderAccordion();
 renderBoard();
 </script>
 </body>
