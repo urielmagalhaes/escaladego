@@ -519,8 +519,11 @@ function renderBoard() {
       return matchesHospital && matchesIntern && matchesSearch;
     });
     const cardsHTML = visible.length
-      ? visible.map(ev => cardHTML(ev, currentWeek)).join('')
-      : `<div class="empty">${dayEvents.length ? 'Nada com esse filtro' : 'Sem atividades'}</div>`;
+  ? visible
+      .sort((a, b) => getStartMinutes(a.horario) - getStartMinutes(b.horario))
+      .map(ev => cardHTML(ev, currentWeek))
+      .join('')
+  : `<div class="empty">${dayEvents.length ? 'Nada com esse filtro' : 'Sem atividades'}</div>`;
     return `
       <div class="day">
         <div class="day-head"><span class="name">${DAY_LABELS[i]}</span><span class="date">${fmt(dates[i])}</span></div>
