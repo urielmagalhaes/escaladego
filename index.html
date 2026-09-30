@@ -518,9 +518,12 @@ function renderBoard() {
       const matchesSearch = !searchTerm || hay.includes(searchTerm);
       return matchesHospital && matchesIntern && matchesSearch;
     });
-    const cardsHTML = visible.length
-      ? visible.map(ev => cardHTML(ev, currentWeek)).join('')
-      : `<div class="empty">${dayEvents.length ? 'Nada com esse filtro' : 'Sem atividades'}</div>`;
+const cardsHTML = visible.length
+  ? visible
+      .sort((a, b) => getStartMinutes(a.horario) - getStartMinutes(b.horario))
+      .map(ev => cardHTML(ev, currentWeek))
+      .join('')
+  : `<div class="empty">${dayEvents.length ? 'Nada com esse filtro' : 'Sem atividades'}</div>`;
     return `
       <div class="day">
         <div class="day-head"><span class="name">${DAY_LABELS[i]}</span><span class="date">${fmt(dates[i])}</span></div>
