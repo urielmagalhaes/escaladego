@@ -553,7 +553,7 @@ function renderWeekNav() {
 }
 
 function computeInternStats(name) {
-  let total = 0, cc = 0, amb = 0, saDiurno = 0, saNoturno = 0;
+  let total = 0, cc = 0, amb = 0, usg = 0, saDiurno = 0, saNoturno = 0;
   EVENTS.forEach(ev => {
     if (ev.tipo === 'didatica' || !ev.internsByWeek) return;
     Object.values(ev.internsByWeek).forEach(names => {
@@ -561,13 +561,14 @@ function computeInternStats(name) {
       total++;
       if (/centro cir/i.test(ev.atividade)) cc++;
       else if (/ambulat/i.test(ev.atividade)) amb++;
+      else if (/usg/i.test(ev.atividade)) usg++;
       if (ev.hospitalKey === 'sa') {
         if (/diurno/i.test(ev.turno)) saDiurno++;
         else if (/noturno/i.test(ev.turno)) saNoturno++;
       }
     });
   });
-  return { total, cc, amb, saDiurno, saNoturno };
+  return { total, cc, amb, usg, saDiurno, saNoturno };
 }
 
 function renderInternStats() {
@@ -581,6 +582,7 @@ function renderInternStats() {
         <div class="stat-row"><span>Total de plantões</span><strong>${s.total}</strong></div>
         <div class="stat-row"><span>Centro Cirúrgico</span><strong>${s.cc}</strong></div>
         <div class="stat-row"><span>Ambulatório</span><strong>${s.amb}</strong></div>
+        <div class="stat-row"><span>USG</span><strong>${s.usg}</strong></div>
         <div class="stat-row"><span>Santo Amaro · Diurno</span><strong>${s.saDiurno}</strong></div>
         <div class="stat-row"><span>Santo Amaro · Noturno</span><strong>${s.saNoturno}</strong></div>
       </div>`;
